@@ -6,6 +6,7 @@ DEFAULT_MODEL="gemma3:latest"
 MODEL="${CMDGEN_MODEL:-$DEFAULT_MODEL}"
 OSTYPE="macOS"
 MAX_ITERATIONS=5
+MAX_CONTEXT_LINES=15  # Keep context from last ~3 steps (5 lines per step)
 
 if ! ollama list > /dev/null 2>&1; then
   echo "Error: agentic: Ollama server is not running." >&2
@@ -37,7 +38,7 @@ plan_task() {
   local task="$1"
   
   local prompt=$(cat <<EOM
-You are an expert task planner for '$OSTYPE' shell commands.
+You are an expert task planner for $OSTYPE shell commands.
 Break down the user's task into a numbered list of simple, atomic steps.
 Each step should be executable as a single shell command.
 Output format:
@@ -84,7 +85,7 @@ step_to_command() {
   local context="$2"
   
   local prompt=$(cat <<EOM
-You are an expert '$OSTYPE' zsh command generator.
+You are an expert $OSTYPE zsh command generator.
 Convert the given step description into a single shell command.
 Output format:
 <CMD>the single exact shell command</CMD>
@@ -199,7 +200,7 @@ Command: $cmd
 Output: $(echo "$output" | head -5)"
   
   # Keep context from last 3 steps to avoid command line length issues
-  context=$(echo "$context" | tail -15)
+  context=$(echo "$context" | tail -$MAX_CONTEXT_LINES)
   context="$context
 $step_context"
   
