@@ -26,12 +26,13 @@ Intelligent agent that breaks down complex tasks into multiple steps, plans the 
    ln -sf "$(pwd)/cmdgen.sh" ~/bin/cmdgen
    ln -sf "$(pwd)/agentic.sh" ~/bin/agentic
    ```
-3. If using the zsh widgets, update the script paths in `.zshrc` and `.zshrc-agentic` (if necessary) and add to your ~/.zshrc:
+3. If using the zsh widgets, update the script paths in the widget files (if necessary) and source them in your ~/.zshrc:
    ```sh
-   # For cmdgen widget
-   source /path/to/.zshrc
-   # For agentic widget
-   source /path/to/.zshrc-agentic
+   # Add to your ~/.zshrc file
+   # For cmdgen widget (Control+G)
+   source /path/to/warp-term/.zshrc
+   # For agentic widget (Control+A)
+   source /path/to/warp-term/.zshrc-agentic
    ```
 
 ## Usage

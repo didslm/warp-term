@@ -36,7 +36,7 @@ spinner() {
 plan_task() {
   local task="$1"
   
-  local prompt=$(cat <<'EOM'
+  local prompt=$(cat <<EOM
 You are an expert task planner for '$OSTYPE' shell commands.
 Break down the user's task into a numbered list of simple, atomic steps.
 Each step should be executable as a single shell command.
@@ -83,7 +83,7 @@ step_to_command() {
   local step="$1"
   local context="$2"
   
-  local prompt=$(cat <<'EOM'
+  local prompt=$(cat <<EOM
 You are an expert '$OSTYPE' zsh command generator.
 Convert the given step description into a single shell command.
 Output format:
@@ -193,11 +193,15 @@ while IFS= read -r step; do
     fi
   fi
   
-  # Update context with step and output
-  context="$context
-Step: $step
+  # Update context with step and output (keep context limited)
+  local step_context="Step: $step
 Command: $cmd
 Output: $(echo "$output" | head -5)"
+  
+  # Keep context from last 3 steps to avoid command line length issues
+  context=$(echo "$context" | tail -15)
+  context="$context
+$step_context"
   
 done <<< "$plan"
 
