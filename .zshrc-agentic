@@ -1,0 +1,32 @@
+#!/bin/zsh
+
+# Agentic widget for zsh
+# This provides interactive agentic task execution
+
+agentic-widget() {
+  # Run the agentic script with the current line buffer
+  # *** REPLACE with the absolute path to your script ***
+  local task="$BUFFER"
+  
+  if [[ -z "$task" ]]; then
+    echo "\nError: No task provided" >&2
+    zle reset-prompt
+    return 1
+  fi
+  
+  # Clear the current line
+  BUFFER=""
+  zle reset-prompt
+  
+  # Execute agentic script
+  AGENTIC_INTERACTIVE=true ~/bin/agentic "$task"
+  
+  # Refresh the prompt
+  zle reset-prompt
+}
+
+# Register the function as a ZLE widget
+zle -N agentic-widget
+
+# Bind Control-A to the agentic widget
+bindkey '^A' agentic-widget
